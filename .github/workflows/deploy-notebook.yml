@@ -32,7 +32,7 @@ jobs:
       run: |
         DEST_HOST=${{ secrets.DATABRICKS_DEST_HOST }}
         DEST_TOKEN=${{ secrets.DATABRICKS_DEST_TOKEN }}
-        DEST_BASE="/smartdata/"
+        DEST_BASE="/smartdata_tst/"
         for file in notebooks_to_deploy/*.py; do
           name=$(basename "$file" .py)
           dest_path="$DEST_BASE/$name"
@@ -87,7 +87,7 @@ jobs:
       run: |
         DEST_HOST=${{ secrets.DATABRICKS_DEST_HOST }}
         DEST_TOKEN=${{ secrets.DATABRICKS_DEST_TOKEN }}
-        DEST_BASE="/py/scripts/main"
+        DEST_BASE="/smartdata_tst/"
         
         echo "Creando workflow: WF_ADB"
         
@@ -101,7 +101,7 @@ jobs:
               "task_key": "tarea1_notebook1",
               "description": "Ejecuta notebook ntbk_1",
               "notebook_task": {
-                "notebook_path": "/smartdata/ntbk_1",
+                "notebook_path": "/smartdata_tst/ntbk_1",
                 "source": "WORKSPACE"
               },
               "job_cluster_key": "job_cluster_smartdata",
@@ -112,7 +112,7 @@ jobs:
               "task_key": "tarea2_notebook2",
               "description": "Ejecuta notebook ntbk_2",
               "notebook_task": {
-                "notebook_path": "/smartdata/ntbk_2",
+                "notebook_path": "/smartdata_tst/ntbk_2",
                 "source": "WORKSPACE"
               },
               "job_cluster_key": "job_cluster_smartdata",
@@ -124,11 +124,11 @@ jobs:
                 }
               ]
             },
-			      {
+            {
               "task_key": "tarea3_notebook3",
-              "description": "Ejecuta notebook ntbk_2",
+              "description": "Ejecuta notebook ntbk_3",
               "notebook_task": {
-                "notebook_path": "/smartdata/ntbk_3",
+                "notebook_path": "/smartdata_tst/ntbk_3",
                 "source": "WORKSPACE"
               },
               "job_cluster_key": "job_cluster_smartdata",
@@ -136,7 +136,7 @@ jobs:
               "max_retries": 2,
               "depends_on": [
                 {
-                  "task_key": "tarea2_notebook2"
+                  "task_key": "tarea1_notebook1"
                 }
               ]
             }
@@ -154,10 +154,6 @@ jobs:
                 "custom_tags": {
                   "environment": "production",
                   "team": "data-engineering"
-                },
-                "spark_conf": {
-                  "spark.databricks.cluster.profile": "serverless",
-                  "spark.databricks.repl.allowedLanguages": "python,sql"
                 }
               }
             }
