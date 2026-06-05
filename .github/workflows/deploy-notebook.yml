@@ -18,7 +18,7 @@ jobs:
         ORIGIN_HOST=${{ secrets.DATABRICKS_ORIGIN_HOST }}
         ORIGIN_TOKEN=${{ secrets.DATABRICKS_ORIGIN_TOKEN }}
         NOTEBOOK_BASE="/Workspace/Users/frsmartdata2605@outlook.com/CICD_SMARTDATA0506"
-        NOTEBOOKS=("ntbk_1" "ntbk_2")  # Agrega más según necesitesas
+        NOTEBOOKS=("ntbk_1" "ntbk_2" "ntbk_3")  # Agrega más según necesitesas
         mkdir -p notebooks_to_deploy
         for nb in "${NOTEBOOKS[@]}"; do
           echo "Exportando $nb en modo raw..."
@@ -32,7 +32,7 @@ jobs:
       run: |
         DEST_HOST=${{ secrets.DATABRICKS_DEST_HOST }}
         DEST_TOKEN=${{ secrets.DATABRICKS_DEST_TOKEN }}
-        DEST_BASE="/smartdata/"
+        DEST_BASE="/smartdata1/"
         for file in notebooks_to_deploy/*.py; do
           name=$(basename "$file" .py)
           dest_path="$DEST_BASE/$name"
@@ -101,7 +101,7 @@ jobs:
               "task_key": "tarea1_notebook1",
               "description": "Ejecuta notebook ntbk_1",
               "notebook_task": {
-                "notebook_path": "/smartdata/ntbk_1",
+                "notebook_path": "/smartdata1/ntbk_1",
                 "source": "WORKSPACE"
               },
               "job_cluster_key": "job_cluster_smartdata",
@@ -112,7 +112,7 @@ jobs:
               "task_key": "tarea2_notebook2",
               "description": "Ejecuta notebook ntbk_2",
               "notebook_task": {
-                "notebook_path": "/smartdata/ntbk_2",
+                "notebook_path": "/smartdata1/ntbk_2",
                 "source": "WORKSPACE"
               },
               "job_cluster_key": "job_cluster_smartdata",
@@ -121,6 +121,24 @@ jobs:
               "depends_on": [
                 {
                   "task_key": "tarea1_notebook1"
+                }
+              ]
+            }
+          ],
+
+            {
+              "task_key": "tarea3_notebook3",
+              "description": "Ejecuta notebook ntbk_3",
+              "notebook_task": {
+                "notebook_path": "/smartdata1/ntbk_3",
+                "source": "WORKSPACE"
+              },
+              "job_cluster_key": "job_cluster_smartdata",
+              "timeout_seconds": 3600,
+              "max_retries": 2,
+              "depends_on": [
+                {
+                  "task_key": "tarea2_notebook2"
                 }
               ]
             }
@@ -138,10 +156,6 @@ jobs:
                 "custom_tags": {
                   "environment": "production",
                   "team": "data-engineering"
-                },
-                "spark_conf": {
-                  "spark.databricks.cluster.profile": "serverless",
-                  "spark.databricks.repl.allowedLanguages": "python,sql"
                 }
               }
             }
